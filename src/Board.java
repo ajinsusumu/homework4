@@ -1,48 +1,51 @@
 public class Board {
     private int N;
-    private int[][] tiles;
+    private char[] tiles;
     private int blankrow() {
         int p;
         for (p = 0; p < N*N; p++) {
-            if (tiles[p/N][p%N] == 0) break;
+            if (tiles[p] == 0) break;
         }
         return p/N;
     }
     private int inversions() {
         int invs = 0;
         for (int p = 0; p < N*N-1; p++) {
-            int j1 = p % N; int i1 = p / N;
-            if (tiles[i1][j1] > 0) {
+            if (tiles[p] > 0) {
                 for (int q = p+1; q < N*N; q++) {
-                    int j2 = q % N; int i2 = q / N;
-                    if (tiles[i2][j2] > 0
-                        && tiles[i1][j1] > tiles[i2][j2]) invs++;
+                    if (tiles[q] > 0
+                        && tiles[p] > tiles[q]) invs++;
                 }
             }
         }
         return invs;
     }
+    private Board(char[] blks, int n) {
+        N = n;
+        tiles = blks;
+    }
     public Board(int[][] blocks) {
-        tiles = blocks;
-        N = tiles.length;
+        N = blocks.length;
+        tiles = new char[N*N];
+        for (int p = 0; p< N*N; p++) {
+            tiles[p] = (char)blocks[p/N][p%N];
+        }
+
     }
     public int size() { return N; }
     public int hamming() {
         int ham = 0;
         for (int p = 0; p < N*N-1; p++) {
-            int j = p % N; int i = p / N;
-            if (tiles[i][j] != p+1) ham++;
+            if (tiles[p] != p+1) ham++;
         }
         return ham;
     }
     public int manhattan() {
         int man = 0;
         for (int p = 0; p < N*N; p++) {
-            int j = p % N; int i = p / N;
-            int q = tiles[i][j] - 1;
-            if (q > 0) {
-                int jj = q % N; int ii = q / N;
-                man += Math.abs(jj - j) + Math.abs(ii - i);
+            int q = tiles[p] - 1;
+            if (q >= 0) {
+                man += Math.abs(p/N - q/N) + Math.abs(p%N - q%N);
             }
         }
         return man;
@@ -63,21 +66,21 @@ public class Board {
         Board that = (Board) y;
         if (this.N != that.N) return false;
         for (int p = 0; p < N*N; p++)
-            if (this.tiles[p/N][p%N] != that.tiles[p/N][p%N]) return false;
+            if (this.tiles[p] != that.tiles[p]) return false;
         return true;
     }
     private Board nbr(int x, int y, int a, int b) {
-        int[][] nt = new int[N][N];
-        for (int p = 0; p < N*N; p++) nt[p/N][p%N] = tiles[p/N][p%N];
-        int orig = nt[x][y];
-        nt[x][y] = 0;
-        nt[a][b] = orig;
-        return new Board(nt);
+        char[] nt = new char[N*N];
+        for (int p = 0; p < N*N; p++) nt[p] = tiles[p];
+        char orig = nt[x*N+y];
+        nt[x*N+y] = 0;
+        nt[a*N+b] = orig;
+        return new Board(nt, N);
     }
     public Iterable<Board> neighbors() {
         Queue<Board> q = new Queue<Board>();
         int p;
-        for (p = 0; p < N*N; p++) if (tiles[p/N][p%N] == 0) break;
+        for (p = 0; p < N*N; p++) if (tiles[p] == 0) break;
         int i = p/N; int j = p%N;
         if (i-1 >= 0) q.enqueue(nbr(i-1,j,  i,j));
         if (j+1 <  N) q.enqueue(nbr(i  ,j+1,i,j));
@@ -90,7 +93,7 @@ public class Board {
         s.append(N + "\n");
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
-                s.append(String.format("%2d ", tiles[i][j]));
+                s.append(String.format("%2d ", tiles[i*N+j]));
             }
             s.append("\n");
         }

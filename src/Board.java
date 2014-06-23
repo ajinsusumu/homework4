@@ -1,6 +1,6 @@
 public class Board {
     private int N;
-    private char[] tiles;
+    private byte[] tiles;
     private int blankrow() {
         int p;
         for (p = 0; p < N*N; p++) {
@@ -20,15 +20,15 @@ public class Board {
         }
         return invs;
     }
-    private Board(char[] blks, int n) {
+    private Board(byte[] blks, int n) {
         N = n;
         tiles = blks;
     }
     public Board(int[][] blocks) {
         N = blocks.length;
-        tiles = new char[N*N];
+        tiles = new byte[N*N];
         for (int p = 0; p< N*N; p++) {
-            tiles[p] = (char)blocks[p/N][p%N];
+            tiles[p] = (byte)blocks[p/N][p%N];
         }
 
     }
@@ -70,9 +70,9 @@ public class Board {
         return true;
     }
     private Board nbr(int x, int y, int a, int b) {
-        char[] nt = new char[N*N];
+        byte[] nt = new byte[N*N];
         for (int p = 0; p < N*N; p++) nt[p] = tiles[p];
-        char orig = nt[x*N+y];
+        byte orig = nt[x*N+y];
         nt[x*N+y] = 0;
         nt[a*N+b] = orig;
         return new Board(nt, N);

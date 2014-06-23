@@ -25,25 +25,23 @@ import java.io.File;
  *  puzzle48.txt                   48     1.07
  *  puzzle49.txt                   49    33.65
  *  puzzle50.txt                   50     9.18
- * 
+ *
  *************************************************************************/
 
 public class PuzzleChecker {
 
-		public static void main(String[] args) {
-			
-			
-
+    public static void main(String[] args) {
         // header
         StdOut.printf("%-25s %7s %8s\n", "filename", "moves", "time");
         StdOut.println("------------------------------------------");
 
         // for each command-line argument
-//        for (String filename : args) {
-		File directory = new File("data");
-		File[] contents = directory.listFiles();
-		for ( File f : contents) {
-			String filename = f.getAbsolutePath();
+        //        for (String filename : args) {
+        File directory = new File("data");
+        File[] contents = directory.listFiles();
+        for ( File f : contents) {
+            String filename = f.getAbsolutePath();
+            //            String filename = "data/puzzle50.txt";
             // read in the board specified in the filename
             In in = new In(filename);
             int N = in.readInt();
